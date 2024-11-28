@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### dev ###
-application-dev.propertiess
+/oauth2-login/src/main/resources/application-dev.properties
