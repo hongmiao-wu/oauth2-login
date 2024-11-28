@@ -24,8 +24,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-    	log.info("OAuth2 Login attempt for provider: {}", 
-                userRequest.getClientRegistration().getRegistrationId());
+//    	log.info("OAuth2 Login attempt for provider: {}", 
+//                userRequest.getClientRegistration().getRegistrationId());
     	
         // Delegate to default implementation to get OAuth2 user
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = 

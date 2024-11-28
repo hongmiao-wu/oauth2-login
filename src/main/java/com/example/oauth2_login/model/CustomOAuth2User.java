@@ -1,6 +1,7 @@
 package com.example.oauth2_login.model;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +25,7 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return null;
+		return user.getProviderUserId();
 	}
 
     
