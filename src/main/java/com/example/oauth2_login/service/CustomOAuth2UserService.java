@@ -24,24 +24,41 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-//    	log.info("OAuth2 Login attempt for provider: {}", 
-//                userRequest.getClientRegistration().getRegistrationId());
     	
         // Delegate to default implementation to get OAuth2 user
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = 
             new DefaultOAuth2UserService();
         OAuth2User oauth2User = delegate.loadUser(userRequest);
-
+        String providerId = userRequest.getClientRegistration().getRegistrationId();
+        
         // Extract key information
-        String providerUserId = oauth2User.getAttribute("sub");
-        String email = oauth2User.getAttribute("email");
-        String name = oauth2User.getAttribute("name");
-        String profileImage = oauth2User.getAttribute("picture");
+        String providerUserId;
+        String email;
+        String name;
+        String imageUrl;
+
+        if ("google".equalsIgnoreCase(providerId)) {
+            providerUserId = oauth2User.getAttribute("sub");
+            email = oauth2User.getAttribute("email");
+            name = oauth2User.getAttribute("name");
+            imageUrl = oauth2User.getAttribute("picture");
+        } else if ("github".equalsIgnoreCase(providerId)) {
+            providerUserId = oauth2User.getAttribute("id").toString(); 
+            email = oauth2User.getAttribute("email"); // May return null if email is private
+            name = oauth2User.getAttribute("name");
+            imageUrl = oauth2User.getAttribute("avatar_url");
+        } else {
+            throw new OAuth2AuthenticationException(
+                "Unsupported provider: " + providerId);
+        }
 
         // Find or create user
-        User user = userRepository.findByProviderUserId(providerUserId)
-            .orElseGet(() -> createNewUser(oauth2User));
-
+        User user = userRepository.findByProviderIdAndProviderUserId(providerId, providerUserId)
+                .orElseGet(() -> {
+                    User newUser = new User(providerId, providerUserId, email, name, imageUrl);
+                    return userRepository.save(newUser);
+                });
+        
         // Update last login
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
@@ -50,14 +67,5 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         return new CustomOAuth2User(user, oauth2User.getAttributes());
     }
 
-    private User createNewUser(OAuth2User oauth2User) {
-        User newUser = new User();
-        newUser.setProviderUserId(oauth2User.getAttribute("sub"));
-        newUser.setEmail(oauth2User.getAttribute("email"));
-        newUser.setName(oauth2User.getAttribute("name"));
-        newUser.setImageUrl(oauth2User.getAttribute("picture"));
-        newUser.setCreatedAt(LocalDateTime.now());
-        newUser.setLastLogin(LocalDateTime.now());
-        return userRepository.save(newUser);
-    }
+    
 }
