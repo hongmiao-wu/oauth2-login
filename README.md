@@ -9,8 +9,8 @@
 The app is being built in phases, so here’s a breakdown of the features I'm working on:
 
 ### 1. **Multi-Provider Authentication** 🔑
-- [ ] **Add Multiple OAuth Providers**  
-  - Integrate Google, GitHub, and Microsoft OAuth2 for login options.
+- [x] **Add Multiple OAuth Providers**  
+  - Integrate Google and GitHub OAuth2 for login options.
 - [ ] **Unified Registration/Login Flow**  
   - Implement a smooth user registration and login flow that works with all connected OAuth providers.
 - [ ] **Account Linking**  
