@@ -1,4 +1,7 @@
-# 🚀 Secure OAuth2 Login Demo with Spring Boot 3.3.5, Java 17, and OAuth2 
+# 🚀 Secure Auth Demo with Spring Boot 3.3.5, Java 17, and OAuth2 
+
+This project is a RESTful API built to practice and demonstrate skills in Java and the Spring Framework. 
+It focuses on implementing authentication, authorization, and user management features with a secure and structured approach.
 
 ### ⚠️ **Note**: This app is **still a work in progress** and is being built step by step. The features listed below are part of the roadmap for future development. 
 
@@ -11,13 +14,12 @@ The app is being built in phases, so here’s a breakdown of the features I'm wo
 ### 1. **Multi-Provider Authentication** 🔑
 - [x] **Add Multiple OAuth Providers**  
   - Integrate Google and GitHub OAuth2 for login options.
-- [ ] **Unified Registration/Login Flow**  
+- [x] **Unified Registration/Login Flow**  
   - Implement a smooth user registration and login flow that works with all connected OAuth providers.
 - [ ] **Account Linking**  
   - Let users link accounts from different OAuth providers to use one account for multiple logins.
-- [ ] **Custom Error Handling**  
-  - Handle errors like invalid logins and session expirations with nice custom error pages.  
-  *(Check out [Spring OAuth2 Guide](https://spring.io/guides/tutorials/spring-boot-oauth2) for more.)*
+- [ ] **Error Handling**  
+  - Handle errors like invalid logins and session expirations.  
 
 ### 2. **Advanced Authorization** 🛡️
 - [ ] **Role-Based Access Control (RBAC)**  
