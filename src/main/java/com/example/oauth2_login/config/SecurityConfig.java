@@ -46,7 +46,11 @@ public class SecurityConfig
 	{
 		return http.
 				authorizeHttpRequests(auth -> {
-					auth.requestMatchers("/", "/signup").permitAll();
+					auth.requestMatchers("/", "/signup", 
+							"/swagger-ui.html",
+						    "/swagger-ui/**", 
+						    "/v3/api-docs*/**", 
+						    "/swagger-resources/**").permitAll();
 					auth.anyRequest().authenticated();
 				})
 				.oauth2Login(oauth2 -> oauth2
