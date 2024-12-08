@@ -45,8 +45,9 @@ public class SecurityConfig
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception 
 	{
 		return http.
+				csrf(csrf -> csrf.disable()). // disable for testing
 				authorizeHttpRequests(auth -> {
-					auth.requestMatchers("/", "/signup", 
+					auth.requestMatchers("/", "user/signup", 
 							"/swagger-ui.html",
 						    "/swagger-ui/**", 
 						    "/v3/api-docs*/**", 

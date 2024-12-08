@@ -1,5 +1,7 @@
 package com.example.oauth2_login.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,9 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = userRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+		user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
 		UserBuilder userBuilder = org.springframework.security.core.userdetails.User.withUsername(user.getEmail());
 		userBuilder.password(user.getPassword());
 		return userBuilder.build();
 	}
-
 }
