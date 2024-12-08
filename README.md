@@ -18,8 +18,8 @@ The app is being built in phases, so here’s a breakdown of the features I'm wo
   - Implement a smooth user registration and login flow that works with all connected OAuth providers.
 - [ ] **Account Linking**  (pending)
   - Let users link accounts from different OAuth providers to use one account for multiple logins.
-- [ ] **Error Handling**  (pending)
-  - Handle errors like invalid logins and session expirations.  
+- [x] **Error Handling**  
+  - Handle errors like invalid logins.
 
 ### 2. **Advanced Authorization** 🛡️
 - [ ] **Role-Based Access Control (RBAC)**  
