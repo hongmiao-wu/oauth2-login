@@ -20,5 +20,10 @@ public class HomeController {
 		return "Hello secured!";
 	}
 	
+	@GetMapping("/user")
+	public String user()
+	{
+		return "Hello user!";
+	}
 
 }
