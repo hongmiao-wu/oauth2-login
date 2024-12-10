@@ -1,5 +1,7 @@
 package com.example.oauth2_login.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -24,6 +26,18 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@GetMapping("/all")
+	public ResponseEntity<List<UserInfoDTO>> getAllUserInfoDTO()
+	{
+		List<UserInfoDTO> userInfoDTOs = userService.getAllUserInfoDTO();
+		if (userInfoDTOs.isEmpty())
+		{
+			return ResponseEntity.noContent().build();
+		}
+		
+		return ResponseEntity.ok(userInfoDTOs);
+	}
 	
 	
 	@PostMapping("/signup")

@@ -1,16 +1,19 @@
 package com.example.oauth2_login.service;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.oauth2_login.model.Role;
 import com.example.oauth2_login.model.User;
 import com.example.oauth2_login.model.UserInfoDTO;
 import com.example.oauth2_login.model.UserSignupDTO;
+import com.example.oauth2_login.repository.RoleRepository;
 import com.example.oauth2_login.repository.UserRepository;
 
 
@@ -19,6 +22,9 @@ public class UserService {
 	
 	@Autowired 
 	private UserRepository userRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -36,9 +42,12 @@ public class UserService {
 		}
 		
 		User newUser = new User();
+		Role role = roleRepository.findByName(Role.RoleType.ROLE_USER)
+				.orElseThrow(() -> new RuntimeException("Role USER not found"));
 		newUser.setName(userSignupDTO.getName());
 		newUser.setEmail(userSignupDTO.getEmail());
 		newUser.setPassword(passwordEncoder.encode(userSignupDTO.getPassword()));
+		newUser.getRoles().add(role);
 		newUser.setCreatedAt(LocalDateTime.now());
 		userRepository.save(newUser);
 	}
@@ -66,5 +75,16 @@ public class UserService {
 		return userInfoDTO;
 	}
 	
+	
+	public List<UserInfoDTO> getAllUserInfoDTO() {
+        return userRepository.findAll().stream()
+            .map(user -> new UserInfoDTO(
+                user.getId(),  
+                user.getEmail(),
+                user.getName(),
+                user.getImageUrl()
+            ))
+            .collect(Collectors.toList());
+    }
 
 }

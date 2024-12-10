@@ -1,17 +1,23 @@
 package com.example.oauth2_login.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.example.oauth2_login.model.CustomOAuth2User;
+import com.example.oauth2_login.model.Role;
 import com.example.oauth2_login.model.User;
+import com.example.oauth2_login.repository.RoleRepository;
 import com.example.oauth2_login.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired 
+    private RoleRepository roleRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -54,15 +63,30 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         User user = userRepository.findByProviderIdAndProviderUserId(providerId, providerUserId)
                 .orElseGet(() -> {
                     User newUser = new User(providerId, providerUserId, email, name, imageUrl);
+                    Role role = roleRepository.findByName(Role.RoleType.ROLE_USER)
+                    		.orElseThrow(() -> new RuntimeException("Role USER not found"));
+                    newUser.getRoles().add(role);
                     return userRepository.save(newUser);
                 });
         
         // Update last login
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
+        
+        // Convert user roles to authorities
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+            .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
+            .collect(Collectors.toList());
+
+        // Return DefaultOAuth2User with original attributes and converted authorities
+        return new DefaultOAuth2User(
+            authorities, 
+            oauth2User.getAttributes(), 
+            "email" // or the attribute you want to use as the name
+        );
 
         // Return custom OAuth2 user
-        return new CustomOAuth2User(user, oauth2User.getAttributes());
+//        return new CustomOAuth2User(user, oauth2User.getAttributes());
     }
 
     
