@@ -22,7 +22,7 @@ The app is being built in phases, so here’s a breakdown of the features I'm wo
   - Handle errors like invalid logins.
 
 ### 2. **Advanced Authorization** 🛡️
-- [ ] **Role-Based Access Control (RBAC)**  
+- [x] **Role-Based Access Control (RBAC)**  
   - Add roles (Admin, User, etc.) to control who can access what.
 - [ ] **Custom Permissions**  
   - Create custom permissions for more granular access control.
