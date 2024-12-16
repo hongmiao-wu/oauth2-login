@@ -24,9 +24,9 @@ The app is being built in phases, so here’s a breakdown of the features I'm wo
 ### 2. **Advanced Authorization** 🛡️
 - [x] **Role-Based Access Control (RBAC)**  
   - Add roles (Admin, User, etc.) to control who can access what.
-- [ ] **Custom Permissions**  
+- [x] **Custom Permissions**  
   - Create custom permissions for more granular access control.
-- [ ] **Method-Level Security**  
+- [x] **Method-Level Security**  
   - Use annotations like `@PreAuthorize` and `@Secured` to protect methods.
 - [ ] **Dynamic Permission Evaluation**  
   - Develop logic to evaluate permissions dynamically based on user roles, attributes, or context.
