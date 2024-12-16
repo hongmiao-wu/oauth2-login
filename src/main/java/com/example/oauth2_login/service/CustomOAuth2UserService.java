@@ -1,7 +1,9 @@
 package com.example.oauth2_login.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,13 +76,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         userRepository.save(user);
         
         // Convert user roles to authorities
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
-            .collect(Collectors.toList());
+//        List<GrantedAuthority> authorities = user.getRoles().stream()
+//            .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
+//            .collect(Collectors.toList());
 
         // Return DefaultOAuth2User with original attributes and converted authorities
         return new DefaultOAuth2User(
-            authorities, 
+        	getAuthorities(user.getRoles()), 
             oauth2User.getAttributes(), 
             "email" // or the attribute you want to use as the name
         );
@@ -88,6 +90,24 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // Return custom OAuth2 user
 //        return new CustomOAuth2User(user, oauth2User.getAttributes());
     }
+    
+    private List<GrantedAuthority> getAuthorities(Set<Role> roles) {
+	    
+	    List<GrantedAuthority> roleAuthorities = roles.stream()
+	            .map(role -> new SimpleGrantedAuthority(role.getName().toString())) // e.g., "ROLE_ADMIN"
+	            .collect(Collectors.toList());
+
+	    List<GrantedAuthority> permissionAuthorities = roles.stream()
+	            .flatMap(role -> role.getPermissions().stream()) // Flatten permissions across all roles
+	            .map(permission -> new SimpleGrantedAuthority(permission.getName())) // e.g., "PRODUCT_CREATE"
+	            .collect(Collectors.toList());
+
+	    List<GrantedAuthority> authorities = new ArrayList<>();
+	    authorities.addAll(roleAuthorities);
+	    authorities.addAll(permissionAuthorities);
+
+	    return authorities;
+	}
 
     
 }
