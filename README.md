@@ -28,7 +28,7 @@ The app is being built in phases, so here’s a breakdown of the features I'm wo
   - Create custom permissions for more granular access control.
 - [x] **Method-Level Security**  
   - Use annotations like `@PreAuthorize` and `@Secured` to protect methods.
-- [ ] **Dynamic Permission Evaluation**  
+- [ ] **Dynamic Permission Evaluation** (pending)
   - Develop logic to evaluate permissions dynamically based on user roles, attributes, or context.
 
 ### 3. **Token Management** 🪙
