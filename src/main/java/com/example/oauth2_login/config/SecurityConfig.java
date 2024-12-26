@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.oauth2_login.service.CustomOAuth2UserService;
 import com.example.oauth2_login.service.UserDetailsServiceImpl;
@@ -26,6 +27,9 @@ public class SecurityConfig
 	
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
+	
+	@Autowired
+	private JwtRequestFilter jwtRequestFilter;
 	
 	
 	@Bean
@@ -46,26 +50,46 @@ public class SecurityConfig
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception 
 	{
-		return http.
-				csrf(csrf -> csrf.disable()). // disable for testing
-				authorizeHttpRequests(auth -> {
-					auth.requestMatchers("/", "user/signup", 
-							"/swagger-ui.html",
-						    "/swagger-ui/**", 
-						    "/v3/api-docs*/**", 
-						    "/swagger-resources/**").permitAll();
-					auth.requestMatchers("/user").hasRole("USER");
-					auth.anyRequest().authenticated();
-				})
-				.oauth2Login(oauth2 -> oauth2
-		                .userInfoEndpoint(userInfo -> 
-	                    userInfo.userService(customOAuth2UserService)
-	                ).defaultSuccessUrl("/secured", true)
-	            )
-				.formLogin(formLogin -> formLogin
-						.defaultSuccessUrl("/secured", true)
-						.permitAll())
-				.build();
+		return http
+		        // Disable CSRF for stateless authentication
+		        .csrf(csrf -> csrf.disable())
+		        
+		        // Authorization rules
+		        .authorizeHttpRequests(auth -> {
+		            auth.requestMatchers(
+		                    "/", 
+		                    "/user/signup", 
+		                    "/user/authenticate", 
+		                    "/swagger-ui.html", 
+		                    "/swagger-ui/**", 
+		                    "/v3/api-docs*/**", 
+		                    "/swagger-resources/**"
+		            ).permitAll(); // Publicly accessible endpoints
+
+		            auth.requestMatchers("/user").hasRole("USER"); // Protect /user with ROLE_USER
+		            auth.anyRequest().authenticated(); // All other endpoints require authentication
+		        })
+		        
+		        // OAuth2 login configuration
+		        .oauth2Login(oauth2 -> oauth2
+		            .userInfoEndpoint(userInfo -> 
+		                userInfo.userService(customOAuth2UserService)
+		            )
+		            .defaultSuccessUrl("/secured", true)
+		        )
+		        
+		        // Form login configuration (Optional, only include if you still need form login)
+		        .formLogin(formLogin -> formLogin
+		            .defaultSuccessUrl("/secured", true)
+		            .permitAll()
+		        )
+		        
+		        // Add custom JWT filter
+		        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+		        
+		        // Build the security filter chain
+		        .build();
+
 	}
 }
 

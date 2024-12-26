@@ -5,10 +5,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.oauth2_login.config.JwtUtil;
+import com.example.oauth2_login.model.LoginDTO;
 import com.example.oauth2_login.model.Role;
 import com.example.oauth2_login.model.User;
 import com.example.oauth2_login.model.UserInfoDTO;
@@ -28,6 +34,12 @@ public class UserService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private JwtUtil jwtUtil;
 
 	public void registerUser(UserSignupDTO userSignupDTO) {
 
@@ -86,5 +98,19 @@ public class UserService {
             ))
             .collect(Collectors.toList());
     }
+	
+	public String authenticate(LoginDTO loginDTO) 
+	{
+	      Authentication authentication= authenticationManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(
+	                		loginDTO.getEmail(),
+	                		loginDTO.getPassword()
+	                )
+	        );
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	        String token = jwtUtil.generateToken(user.getName());
+	        return token;
+	}
 
 }

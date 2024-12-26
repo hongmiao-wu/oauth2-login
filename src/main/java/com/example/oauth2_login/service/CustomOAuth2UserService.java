@@ -75,20 +75,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
         
-        // Convert user roles to authorities
-//        List<GrantedAuthority> authorities = user.getRoles().stream()
-//            .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
-//            .collect(Collectors.toList());
-
-        // Return DefaultOAuth2User with original attributes and converted authorities
         return new DefaultOAuth2User(
         	getAuthorities(user.getRoles()), 
             oauth2User.getAttributes(), 
             "email" // or the attribute you want to use as the name
         );
 
-        // Return custom OAuth2 user
-//        return new CustomOAuth2User(user, oauth2User.getAttributes());
     }
     
     private List<GrantedAuthority> getAuthorities(Set<Role> roles) {
