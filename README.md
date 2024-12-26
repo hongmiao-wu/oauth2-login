@@ -32,7 +32,7 @@ The app is being built in phases, so here’s a breakdown of the features I'm wo
   - Develop logic to evaluate permissions dynamically based on user roles, attributes, or context.
 
 ### 3. **Token Management** 🪙
-- [ ] **JWT Token Generation**  
+- [x] **JWT Token Generation**  
   - Create and manage JWT tokens for stateless authentication.
 - [ ] **Refresh Token Support**  
   - Add refresh tokens so users don’t need to log in all the time.
