@@ -23,6 +23,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
+	
+	//TODO: add role/permission based endpoints
+	
 	@Autowired
 	ProductService productService;
 	

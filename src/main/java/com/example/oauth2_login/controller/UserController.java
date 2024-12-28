@@ -31,6 +31,7 @@ public class UserController {
 	@GetMapping("/all")
 	public ResponseEntity<List<UserInfoDTO>> getAllUserInfoDTO()
 	{
+		// TODO: should this endpoint be moved under the admin?
 		List<UserInfoDTO> userInfoDTOs = userService.getAllUserInfoDTO();
 		if (userInfoDTOs.isEmpty())
 		{
@@ -43,6 +44,7 @@ public class UserController {
 	
 	@PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody UserSignupDTO userSignupDTO) {
+		// TODO: signup or register
         try {
             userService.registerUser(userSignupDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("User successfully registered");
@@ -54,6 +56,7 @@ public class UserController {
 	@GetMapping("/me")
 	public ResponseEntity<UserInfoDTO> getCurrentUser()
 	{
+		// TODO: use JWT to unify
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || authentication.getName().equals("anonymousUser"))
 		{
