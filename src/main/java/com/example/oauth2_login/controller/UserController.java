@@ -4,21 +4,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.oauth2_login.model.LoginDTO;
 import com.example.oauth2_login.model.UserInfoDTO;
-import com.example.oauth2_login.model.UserSignupDTO;
 import com.example.oauth2_login.service.UserService;
 
 @RestController
@@ -40,18 +35,6 @@ public class UserController {
 		
 		return ResponseEntity.ok(userInfoDTOs);
 	}
-	
-	
-	@PostMapping("/signup")
-    public ResponseEntity<String> registerUser(@RequestBody UserSignupDTO userSignupDTO) {
-		// TODO: signup or register
-        try {
-            userService.registerUser(userSignupDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User successfully registered");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registration failed: " + e.getMessage());
-        }
-    }
 	
 	@GetMapping("/me")
 	public ResponseEntity<UserInfoDTO> getCurrentUser()
@@ -86,12 +69,4 @@ public class UserController {
 		UserInfoDTO userInfoDTO = userService.getUserInfoDTOByEmail(authentication.getName());
 		return ResponseEntity.ok(userInfoDTO);
 	}
-	
-	@PostMapping("/authenticate")
-    public String authenticate(@RequestBody LoginDTO loginDTO)
-    { 
-		return  userService.authenticate(loginDTO);
-	}
-	
-
 }

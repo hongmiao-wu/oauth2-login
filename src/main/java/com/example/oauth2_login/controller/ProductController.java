@@ -24,8 +24,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 @RequestMapping("/product")
 public class ProductController {
 	
-	//TODO: add role/permission based endpoints
-	
 	@Autowired
 	ProductService productService;
 	
@@ -65,6 +63,7 @@ public class ProductController {
 	
 	// Update a product by ID
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('PRODUCT_UPDATE')")
     public ResponseEntity<Product> updateProductById(@PathVariable Integer id, @RequestBody Product product) {
         Product updatedProduct = productService.updateProductById(id, product);
         return ResponseEntity.ok(updatedProduct);
@@ -72,6 +71,7 @@ public class ProductController {
 
     // Delete a product by ID
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('PRODUCT_DELETE')")
     public ResponseEntity<Void> deleteProductById(@PathVariable Integer id) {
         productService.deleteProductById(id);
         return ResponseEntity.noContent().build();

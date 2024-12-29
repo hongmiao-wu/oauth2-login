@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -58,14 +57,12 @@ public class SecurityConfig
 		        .authorizeHttpRequests(auth -> {
 		            auth.requestMatchers(
 		                    "/", 
-		                    "/user/signup", 
-		                    "/user/authenticate", 
+		                    "/auth/**", 
 		                    "/swagger-ui.html", 
 		                    "/swagger-ui/**", 
 		                    "/v3/api-docs*/**", 
 		                    "/swagger-resources/**"
 		            ).permitAll(); // Publicly accessible endpoints
-
 		            auth.requestMatchers("/user").hasRole("USER"); // Protect /user with ROLE_USER
 		            auth.anyRequest().authenticated(); // All other endpoints require authentication
 		        })
@@ -75,12 +72,12 @@ public class SecurityConfig
 		            .userInfoEndpoint(userInfo -> 
 		                userInfo.userService(customOAuth2UserService)
 		            )
-		            .defaultSuccessUrl("/secured", true)
+		            .defaultSuccessUrl("/user", true)
 		        )
 		        
 		        // Form login configuration (Optional, only include if you still need form login)
 		        .formLogin(formLogin -> formLogin
-		            .defaultSuccessUrl("/secured", true)
+		            .defaultSuccessUrl("/user", true)
 		            .permitAll()
 		        )
 		        

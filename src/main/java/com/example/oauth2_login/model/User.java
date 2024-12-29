@@ -31,6 +31,14 @@ public class User {
 		this.name = name;
 		this.imageUrl = imageUrl;
 	}
+	
+	public User (String name, String email, String password, Set<Role> roles) 
+	{
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.roles = roles == null ? new HashSet<>() : new HashSet<>(roles);
+	}
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

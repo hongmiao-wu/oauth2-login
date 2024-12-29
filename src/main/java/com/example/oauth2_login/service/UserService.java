@@ -18,7 +18,7 @@ import com.example.oauth2_login.model.LoginDTO;
 import com.example.oauth2_login.model.Role;
 import com.example.oauth2_login.model.User;
 import com.example.oauth2_login.model.UserInfoDTO;
-import com.example.oauth2_login.model.UserSignupDTO;
+import com.example.oauth2_login.model.UserRegisterDTO;
 import com.example.oauth2_login.repository.RoleRepository;
 import com.example.oauth2_login.repository.UserRepository;
 
@@ -41,7 +41,7 @@ public class UserService {
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	public void registerUser(UserSignupDTO userSignupDTO) {
+	public void registerUser(UserRegisterDTO userSignupDTO) {
 
 		if (userSignupDTO.getEmail() == null || userSignupDTO.getPassword() == null || userSignupDTO.getName() == null)
 		{
@@ -111,6 +111,11 @@ public class UserService {
 	        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	        String token = jwtUtil.generateToken(user.getName());
 	        return token;
+	}
+	
+	public User saveUser(User user)
+	{
+		return userRepository.save(user);
 	}
 
 }
